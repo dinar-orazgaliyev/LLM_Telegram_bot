@@ -1,4 +1,4 @@
-from dotenv import load_dotenv
+
 from telegram import Update
 from telegram.ext import (
     Application,
@@ -10,14 +10,10 @@ from telegram.ext import (
     Updater,
 )
 from typing import Final
-import os, re
 from dateutil.parser import parse
 
-import pytz
 
-load_dotenv()
-TOKEN: Final = os.getenv("api_key")
-BOT_USERNAME: Final = "@Jarvis4Homa"
+
 
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -77,22 +73,5 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f"Update {update} caused error {context.error}")
 
 
-# === Bot Startup ===
 
-if __name__ == "__main__":
-    print("Starting German learning bot...")
-    app = Application.builder().token(TOKEN).build()
 
-    # Command handlers
-    app.add_handler(CommandHandler("start", start_command))
-    app.add_handler(CommandHandler("help", help_command))
-    app.add_handler(CommandHandler("exercise", exercise_command))
-
-    # Message handler
-    app.add_handler(MessageHandler(filters.TEXT, handle_message))
-
-    # Error handler
-    app.add_error_handler(error)
-
-    print("Polling...")
-    app.run_polling(poll_interval=3)
