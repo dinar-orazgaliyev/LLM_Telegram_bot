@@ -9,3 +9,6 @@ This is a Telegram bot designed to help you **learn German** in an interactive w
 - Modular architecture: separates Telegram bot logic, model interaction, and utilities.
 - Future-ready for NLP enhancements and multi-model support.
 
+For now local llama-phi3 model will be used, but later it can be integrated with other LLM models inside the llm_manager
+in order for it to work install the model:
+-curl -fsSL https://ollama.com/install.sh | sh
