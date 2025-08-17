@@ -12,7 +12,7 @@ from telegram.ext import (
 from typing import Final
 from dateutil.parser import parse
 from src.llm.llm_manager import get_llm_response
-
+from src.prompts.prompts import exercise_prompt, feedback_prompt
 
 
 
@@ -31,15 +31,48 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/start - Welcome message\n"
         "/help - Show this message\n"
         "/exercise - Get a short German exercise\n\n"
+        "setlevel - Set your Deutsch level\n\n"
+        "settype - set exercise type (Grammar or Vocabulary)\n\n"
         "Or just type in German and I will reply and correct your mistakes."
     )
 
+async def set_level_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if context.args:
+        print(context.args)
+        level = context.args[0].upper()
+        context.user_data['level'] = level 
+        await update.message.reply_text(f"✅ Your level is set to {level}")
+    else:
+        await update.message.reply_text("Usage: /setlevel <A1/A2/B1/B2/C1>")
+
+
+async def set_type_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if context.args:
+        exercise_type = context.args[0].lower()
+        if exercise_type in ["grammar", "vocabulary"]:
+            context.user_data["exercise_type"] = exercise_type
+            await update.message.reply_text(f"✅ Exercise type set to {exercise_type}")
+        else:
+            await update.message.reply_text("Choose 'grammar' or 'vocabulary'.")
+    else:
+        await update.message.reply_text("Usage: /settype <grammar/vocabulary>")
+
 
 async def exercise_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    exercise_prompt = "Generate a short German learning exercise. Keep it simple for B1 level."
-    exercise_text = get_llm_response(exercise_prompt)
+    
+    level = context.user_data.get('level','B1')
+    print(level)
+    exercise_type = context.user_data.get("exercise_type","grammar")
+    prompt_text = exercise_prompt.format(exercise_type=exercise_type,level=level)
+    exercise_text = get_llm_response(prompt_text)
 
-    context.user_data["current_exercise"] = "dynamic_exercise"
+    
+    context.user_data["current_exercise"] = {
+    "level": level,
+    "type": exercise_type,
+    "id": "dynamic_exercise",
+    "text": exercise_text
+    }
     await update.message.reply_text(exercise_text)
 
 
@@ -51,11 +84,20 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Check if user is answering an exercise
     if "current_exercise" in context.user_data:
-        exercise_id = context.user_data.pop("current_exercise")
+        exercise_info  = context.user_data.pop("current_exercise")
+        exercise_type = exercise_info["type"]
+        level = exercise_info["level"]
+        exercise_text = exercise_info["text"]
+        print(exercise_info)
+        prompt_text = feedback_prompt.format(
+            user_text=user_text,
+            exercise_type=exercise_type,
+            level=level,
+            exercise_text=exercise_text
+        )
         feedback = get_llm_response(
             user_text,
-            system_prompt="You are a German teacher. The user just answered an exercise. "
-                          "Give short feedback in German, correcting mistakes if needed."
+            system_prompt=prompt_text
         )
         await update.message.reply_text(f"✅ Feedback: {feedback}")
         return
@@ -64,7 +106,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     response = get_llm_response(
         user_text,
         system_prompt="You are a helpful German language tutor. "
-                      "Correct mistakes politely and explain briefly."
+                      "Correct mistakes politely and explain briefly in both German and English."
     )
     await update.message.reply_text(f"🤖 {response}")
 
