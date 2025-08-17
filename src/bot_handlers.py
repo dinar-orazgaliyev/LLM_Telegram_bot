@@ -1,5 +1,5 @@
 
-from telegram import Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -37,26 +37,60 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 async def set_level_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if context.args:
-        print(context.args)
-        level = context.args[0].upper()
-        context.user_data['level'] = level 
-        await update.message.reply_text(f"✅ Your level is set to {level}")
-    else:
-        await update.message.reply_text("Usage: /setlevel <A1/A2/B1/B2/C1>")
+    keyboard = [
+        [
+            InlineKeyboardButton("A1", callback_data="level_A1"),
+            InlineKeyboardButton("A2", callback_data="level_A2"),
+            InlineKeyboardButton("B1", callback_data="level_B1"),
+        ],
+        [
+            InlineKeyboardButton("B2", callback_data="level_B2"),
+            InlineKeyboardButton("C1", callback_data="level_C1"),
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text("Select your German level:", reply_markup=reply_markup)
 
+async def level_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()  # Acknowledge the callback
+    
+    # Extract the level from callback_data
+    level = query.data.split("_")[1]
+    context.user_data['level'] = level
+    await query.edit_message_text(f"✅ Your level is set to {level}")
+
+# async def set_type_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+#     if context.args:
+#         exercise_type = context.args[0].lower()
+#         if exercise_type in ["grammar", "vocabulary"]:
+#             context.user_data["exercise_type"] = exercise_type
+#             await update.message.reply_text(f"✅ Exercise type set to {exercise_type}")
+#         else:
+#             await update.message.reply_text("Choose 'grammar' or 'vocabulary'.")
+#     else:
+#         await update.message.reply_text("Usage: /settype <grammar/vocabulary>")
 
 async def set_type_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if context.args:
-        exercise_type = context.args[0].lower()
-        if exercise_type in ["grammar", "vocabulary"]:
-            context.user_data["exercise_type"] = exercise_type
-            await update.message.reply_text(f"✅ Exercise type set to {exercise_type}")
-        else:
-            await update.message.reply_text("Choose 'grammar' or 'vocabulary'.")
-    else:
-        await update.message.reply_text("Usage: /settype <grammar/vocabulary>")
+    keyboard = [
+        [
+            InlineKeyboardButton("Grammar", callback_data="type_grammar"),
+            InlineKeyboardButton("Vocabulary", callback_data="type_vocabulary"),
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text("Select exercise type:", reply_markup=reply_markup)
 
+
+# Step 2: Callback when a button is clicked
+async def type_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()  # Acknowledge the callback
+    
+    # Extract the type from callback_data
+    exercise_type = query.data.split("_")[1]
+    context.user_data["exercise_type"] = exercise_type
+    await query.edit_message_text(f"✅ Exercise type set to {exercise_type}")
 
 async def exercise_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     

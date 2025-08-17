@@ -1,8 +1,8 @@
 from dotenv import load_dotenv
 from typing import Final
 import os 
-from .bot_handlers import start_command, help_command, exercise_command,handle_message, error,set_level_command,set_type_command
-from telegram.ext import Application, CommandHandler, MessageHandler, filters
+from .bot_handlers import start_command, help_command, exercise_command,handle_message, error,set_level_command,set_type_command,level_callback, type_callback
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler
 from telegram import BotCommand
 
 
@@ -32,7 +32,10 @@ app.add_handler(CommandHandler("start", start_command))
 app.add_handler(CommandHandler("help", help_command))
 app.add_handler(CommandHandler("exercise", exercise_command))
 app.add_handler(CommandHandler("setlevel", set_level_command))
+app.add_handler(CallbackQueryHandler(level_callback, pattern="^level_"))
 app.add_handler(CommandHandler("settype", set_type_command))
+app.add_handler(CommandHandler("settype", set_type_command))
+app.add_handler(CallbackQueryHandler(type_callback, pattern="^type_"))
 # Message handler
 app.add_handler(MessageHandler(filters.TEXT, handle_message))
 
