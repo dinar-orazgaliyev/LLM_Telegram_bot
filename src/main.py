@@ -15,6 +15,8 @@ async def set_commands(application):
         BotCommand("start", "Welcome message"),
         BotCommand("help", "Show help message"),
         BotCommand("exercise", "Get a German exercise"),
+        BotCommand("setlevel", "Sets the level of German"),
+        BotCommand("settype","set type of exercise grammar/vocabulary")
     ]
     await application.bot.set_my_commands(commands)
 
