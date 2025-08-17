@@ -11,6 +11,7 @@ from telegram.ext import (
 )
 from typing import Final
 from dateutil.parser import parse
+from src.llm.llm_manager import get_llm_response
 
 
 
@@ -35,12 +36,10 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def exercise_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Example simple exercise
-    exercise_text = (
-        "Translate the following sentence into German:\n"
-        "'I am learning German at the moment.'"
-    )
-    context.user_data["current_exercise"] = "translate_1"
+    exercise_prompt = "Generate a short German learning exercise. Keep it simple for B1 level."
+    exercise_text = get_llm_response(exercise_prompt)
+
+    context.user_data["current_exercise"] = "dynamic_exercise"
     await update.message.reply_text(exercise_text)
 
 
@@ -53,17 +52,21 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Check if user is answering an exercise
     if "current_exercise" in context.user_data:
         exercise_id = context.user_data.pop("current_exercise")
-        # Here you would send user_text + exercise_id to LLaMA for evaluation
-        response = (
-            f"✅ Got your answer for {exercise_id}. Here’s feedback: (dummy feedback)"
+        feedback = get_llm_response(
+            user_text,
+            system_prompt="You are a German teacher. The user just answered an exercise. "
+                          "Give short feedback in German, correcting mistakes if needed."
         )
-        await update.message.reply_text(response)
+        await update.message.reply_text(f"✅ Feedback: {feedback}")
         return
 
-    # Otherwise, normal chat (correction / conversation)
-    # Send user_text to LLaMA and get a response
-    response = f"🤖 LLaMA Response: (dummy reply to '{user_text}')"
-    await update.message.reply_text(response)
+    # Otherwise, normal conversation
+    response = get_llm_response(
+        user_text,
+        system_prompt="You are a helpful German language tutor. "
+                      "Correct mistakes politely and explain briefly."
+    )
+    await update.message.reply_text(f"🤖 {response}")
 
 
 # === Error Handler ===
