@@ -1,14 +1,31 @@
 from dotenv import load_dotenv
 from typing import Final
-import os 
-from .bot_handlers import start_command, help_command, exercise_command,handle_message, error,set_level_command,set_type_command,level_callback, type_callback
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler
+import os
+from .bot_handlers import (
+    start_command,
+    help_command,
+    exercise_command,
+    handle_message,
+    error,
+    set_level_command,
+    set_type_command,
+    level_callback,
+    type_callback,
+)
+from telegram.ext import (
+    Application,
+    CommandHandler,
+    MessageHandler,
+    filters,
+    CallbackQueryHandler,
+)
 from telegram import BotCommand
 
 
 load_dotenv()
 TOKEN: Final = os.getenv("api_key")
-BOT_USERNAME: Final = "@Jarvis4Homa"
+BOT_USERNAME: Final = "@Jarvis4Deutsch"
+
 
 async def set_commands(application):
     commands = [
@@ -16,17 +33,13 @@ async def set_commands(application):
         BotCommand("help", "Show help message"),
         BotCommand("exercise", "Get a German exercise"),
         BotCommand("setlevel", "Sets the level of German"),
-        BotCommand("settype","set type of exercise grammar/vocabulary")
+        BotCommand("settype", "set type of exercise grammar/vocabulary"),
     ]
     await application.bot.set_my_commands(commands)
 
+
 print("Starting German learning bot...")
-app = (
-    Application.builder()
-    .token(TOKEN)
-    .post_init(set_commands)
-    .build()
-)
+app = Application.builder().token(TOKEN).post_init(set_commands).build()
 # Command handlers
 app.add_handler(CommandHandler("start", start_command))
 app.add_handler(CommandHandler("help", help_command))
