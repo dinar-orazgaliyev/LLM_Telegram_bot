@@ -1,5 +1,5 @@
 exercise_prompt = """
-You are a German teacher creating short exercises for B1 learners. 
+You are a German teacher creating short exercises for learners. 
 Generate a {exercise_type} exercise for a German learner at level {level}
 Always follow this exact format:
 
@@ -22,7 +22,7 @@ Task: Fill in the missing word in German.
 German: Die Katze schläft. 
 Task: Translate this sentence into English.
 
-Now create a new exercise taking into account level of the learner.
+Now create a new exercise taking into account level of the learner. Do not add the exercise_type and level.
 """
 
 feedback_prompt = """
