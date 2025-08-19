@@ -111,25 +111,39 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Check if user is answering an exercise
     if "current_exercise" in context.user_data:
-        exercise_info  = context.user_data["current_exercise"]
+        exercise_info = context.user_data["current_exercise"]
         exercise_type = exercise_info["type"]
         level = exercise_info["level"]
         exercise_text = exercise_info["text"]
-        print(exercise_info)
-        prompt_text = feedback_prompt.format(
-            user_text=user_text,
-            exercise_type=exercise_type,
-            level=level,
-            exercise_text=exercise_text
-        )
-        feedback = llm_manager.get_response(
-            user_text,
-            system_prompt=prompt_text
-        )
+
+        # First-time feedback: use feedback_prompt
+        if "qa_chain" not in context.user_data:
+            prompt_text = feedback_prompt.format(
+                user_text=user_text,
+                exercise_type=exercise_type,
+                level=level,
+                exercise_text=exercise_text
+            )
+            feedback = llm_manager.get_response(
+                user_text,
+                system_prompt=prompt_text
+            )
+
+            # Initialize QA chain and store it
+            llm_manager.init_qa_chain(level=level)
+            context.user_data["qa_chain"] = llm_manager.qa_chain
+
+        # Subsequent QA messages: use the chain
+        else:
+            qa_chain = context.user_data["qa_chain"]
+            # Use async call if your handler is async
+            result = await qa_chain.ainvoke({"question": user_text})
+            feedback = result["answer"]
+
         await update.message.reply_text(f"✅ Feedback: {feedback}")
         return
 
-    # Otherwise, normal conversation
+    # Normal conversation
     response = llm_manager.get_response(
         user_text,
         system_prompt="You are a helpful German language tutor. "

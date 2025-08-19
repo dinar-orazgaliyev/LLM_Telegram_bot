@@ -19,9 +19,12 @@ class LLMManager:
         rag_dir = root / "data_rag"
         self.model = ChatOllama(model=model_name, temperature=temperature)
         self.db = init_vector_db(rag_dir)  # from your previous code
-    def init_qa_chain(self,level='A1'):
+
+    def init_qa_chain(self,level='A1',exercise_text=None):
         retriever = self.db.as_retriever(search_kwargs={"filter": {"level": level}})
-        memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+        memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True,output_key="answer")
+        if exercise_text:
+            memory.chat_memory.add_user_message(f"Exercise:\n{exercise_text}")
         self.qa_chain = ConversationalRetrievalChain.from_llm(
             llm=self.model,
             retriever=retriever,
