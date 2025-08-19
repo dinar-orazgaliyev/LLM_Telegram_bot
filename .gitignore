@@ -3,4 +3,6 @@ venv/
 venv/
 __pycache__/
 *.pyc
-data_rag/
+#data_rag/
+chroma_db/
+_db

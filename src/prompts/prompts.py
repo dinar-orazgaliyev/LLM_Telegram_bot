@@ -1,28 +1,15 @@
+
 exercise_prompt = """
-You are a German teacher creating short exercises for learners. 
-Generate a {exercise_type} exercise for a German learner at level {level}
-Always follow this exact format:
+You are a creative German teacher generating short exercises for learners.
+Generate a {exercise_type} exercise for a German learner at level {level}.
 
-German: [one short German sentence]  
-English: [its translation into English]  
-Task: [a clear instruction]
+Here are some sample exercises for reference:
 
-Keep the German sentence simple (max 8–10 words).
+{context}
 
-Examples for the exercise_type = grammar, level = A1:
-
-German: Ich trinke ___.
-English: I am drinking water.
-Task: Fill in the missing word in German.
-
-German: ___ gehen wir zur Schule.
-English: We are going to school.
-Task: Fill in the missing word in German.
-
-German: Die Katze schläft. 
-Task: Translate this sentence into English.
-
-Now create a new exercise taking into account level of the learner. Do not add the exercise_type and level.
+Create a new, engaging exercise that is different from the examples.
+Keep the German sentence short (5–10 words) and simple.
+Provide the English translation and a clear task instruction.
 """
 
 feedback_prompt = """
