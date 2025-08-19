@@ -52,16 +52,16 @@ def split_into_chunks(pdf_texts: dict, chunk_size=500, overlap=50):
     return all_docs
 
 
-def build_vector_db(all_docs, persist_dir: Path):
+def build_vector_db(all_docs, persist_dir: Path, model="phi3"):
     """Build and persist a Chroma vector database."""
-    embeddings = OllamaEmbeddings(model="phi3")
+    embeddings = OllamaEmbeddings(model=model)
     db = Chroma.from_documents(all_docs, embeddings, persist_directory=str(persist_dir))
     return db
 
 
-def load_vector_db(persist_dir: Path):
+def load_vector_db(persist_dir: Path, model="phi3"):
     """Load an existing Chroma database."""
-    embeddings = OllamaEmbeddings(model="phi3")
+    embeddings = OllamaEmbeddings(model=model)
     return Chroma(persist_directory=str(persist_dir), embedding_function=embeddings)
 
 
