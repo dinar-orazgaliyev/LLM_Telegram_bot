@@ -2,6 +2,10 @@
 
 This is a Telegram bot designed to help you **learn German** interactively. The bot uses a local LLaMA-based model (`phi3`) via LangChain, and can be extended to support **RAG (Retrieval-Augmented Generation)** for contextual responses.
 
+## Sample Chat with the Bot
+
+![Telegram Bot Chat](assets/telegram_bot_screenshot.png)
+
 ## Features
 
 - Interactive German conversation practice.
@@ -13,6 +17,7 @@ This is a Telegram bot designed to help you **learn German** interactively. The 
 
 - Docker & Docker Compose
 - Telegram bot token from [BotFather](https://t.me/BotFather)
+
 
 ## Setup
 
@@ -38,4 +43,5 @@ src/
 start.sh              # Starts Ollama and the bot
 Dockerfile            # Container setup
 docker-compose.yml    # Service orchestration
+
 
