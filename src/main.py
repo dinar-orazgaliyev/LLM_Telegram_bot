@@ -23,7 +23,7 @@ from telegram import BotCommand
 
 
 load_dotenv()
-TOKEN: Final = os.getenv("api_key")
+TOKEN: Final = os.getenv("TELEGRAM_TOKEN")
 BOT_USERNAME: Final = "@Jarvis4Deutsch"
 
 

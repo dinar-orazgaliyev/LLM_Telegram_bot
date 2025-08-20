@@ -13,7 +13,7 @@ from telegram.ext import (
 from typing import Final
 from dateutil.parser import parse
 from src.llm.llm_manager import LLMManager
-from src.prompts.prompts import exercise_prompt, feedback_prompt
+from src.prompts.prompts import exercise_prompt, feedback_prompt, conversation_prompt
 
 
 llm_manager = LLMManager(model_name="phi3")
@@ -144,10 +144,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     # Normal conversation
+    level = context.user_data.get('level','A1')
+    system_prompt = conversation_prompt.format(user_text=user_text, level=level)
     response = llm_manager.get_response(
         user_text,
-        system_prompt="You are a helpful German language tutor. "
-                      "Correct mistakes politely and explain briefly in both German and English."
+        system_prompt=system_prompt
     )
     await update.message.reply_text(f"🤖 {response}")
 
