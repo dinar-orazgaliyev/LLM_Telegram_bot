@@ -4,7 +4,7 @@ This is a Telegram bot designed to help you **learn German** interactively. The 
 
 ## Sample Chat with the Bot
 
-![Telegram Bot Chat](assets/telegram_bot_screenshot.png)
+![Telegram Bot Chat](assets/telegram_bot_screenshot.jpg)
 
 ## Features
 
