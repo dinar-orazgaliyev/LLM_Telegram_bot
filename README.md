@@ -1,6 +1,6 @@
 # German Learning Chatbot
 
-This is a Telegram bot designed to help you **learn German** in an interactive way. The bot uses a local LLaMA-based model (phi3) via LangChain, allowing flexible integration with different language models in the future. It can also be extended to support **RAG (Retrieval-Augmented Generation)** for contextual responses.
+This is a Telegram bot designed to help you **learn German** interactively. The bot uses a local LLaMA-based model (`phi3`) via LangChain, and can be extended to support **RAG (Retrieval-Augmented Generation)** for contextual responses.
 
 ## Features
 
@@ -9,6 +9,33 @@ This is a Telegram bot designed to help you **learn German** in an interactive w
 - Modular architecture: separates Telegram bot logic, model interaction, and utilities.
 - Future-ready for NLP enhancements and multi-model support.
 
-For now local llama-phi3 model will be used, but later it can be integrated with other LLM models inside the llm_manager
-in order for it to work install the model:
--curl -fsSL https://ollama.com/install.sh | sh
+## Requirements
+
+- Docker & Docker Compose
+- Telegram bot token from [BotFather](https://t.me/BotFather)
+
+## Setup
+
+1. Create a `.env` file in the project root with your Telegram bot token:
+
+```env
+TELEGRAM_TOKEN=your_bot_token_here
+
+## Build and run the bot using Docker Compose:
+docker-compose up --build
+
+# Stop the bot 
+docker-compose down
+
+## Project Structure
+
+data_rag/
+src/
+|── llm/              # Model interaction & utilities
+├── prompts/          # Prompts for the LLM
+├── bot_handlers.py   # Telegram bot commands and message handling
+├── main.py           # Entry point
+start.sh              # Starts Ollama and the bot
+Dockerfile            # Container setup
+docker-compose.yml    # Service orchestration
+
