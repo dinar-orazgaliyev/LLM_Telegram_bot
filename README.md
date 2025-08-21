@@ -1,6 +1,6 @@
 # German Learning Chatbot
 
-This is a Telegram bot designed to help you **learn German** interactively. The bot uses a local LLaMA-based model (`phi3`) via LangChain, and can be extended to support **RAG (Retrieval-Augmented Generation)** for contextual responses.
+This is a Telegram bot designed to help you **learn German** interactively. The bot uses a local LLaMA-based model (`phi3`) via LangChain, and supports **RAG (Retrieval-Augmented Generation)** for contextual responses.
 
 ## Sample Chat with the Bot
 
